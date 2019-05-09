@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wx-access-policy>
+	<!-- 商户公众号受限资源 -->
+	<supplier-restricted-access>
+		<url-pattern>/**/supplier/*</url-pattern>
+	</supplier-restricted-access>
+
+	<!-- 用户公众号受限资源 -->
+	<customer-restricted-access>
+		<url-pattern>/**/customer/*</url-pattern>
+	</customer-restricted-access>
+</wx-access-policy>

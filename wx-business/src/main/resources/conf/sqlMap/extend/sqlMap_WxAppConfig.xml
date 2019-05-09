@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 微信通用配置 -->
+<mapper namespace="WX_APP_CONFIG">
+	<!-- 获取满足条件的记录数量 -->
+	<select id="QUERY_FOR_COUNT" parameterType="org.gy.framework.bo.WxAppConfigBo" resultType="java.lang.Integer">
+  	   	SELECT 
+  	   		COUNT(1)
+        FROM wx_app_config 
+        WHERE 1=1
+	   	   <if test="id != null" >
+		     AND ID = #{id}
+		   </if>   
+	   	   <if test="appId != null and appId !=''" >
+		     AND APP_ID = #{appId}
+		   </if>
+	   	   <if test="appSecret != null and appSecret !=''" >
+		     AND APP_SECRET = #{appSecret}
+		   </if>
+	   	   <if test="appName != null and appName !=''" >
+		     AND APP_NAME = #{appName}
+		   </if>
+	   	   <if test="validateToken != null and validateToken !=''" >
+		     AND VALIDATE_TOKEN = #{validateToken}
+		   </if>
+	   	   <if test="enable != null" >
+		     AND ENABLE = #{enable}
+		   </if>   
+		   <if test="createTime != null" >
+		     AND CREATE_TIME = #{createTime}
+		   </if>
+   	       <if test="createTimeStart != null" >
+			 AND CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+		   </if>
+		   <if test="createTimeEnd != null" >
+		     AND CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+		   </if>
+		   <if test="updateTime != null" >
+		     AND UPDATE_TIME = #{updateTime}
+		   </if>
+   	       <if test="updateTimeStart != null" >
+			 AND UPDATE_TIME <![CDATA[>=]]> #{updateTimeStart}
+		   </if>
+		   <if test="updateTimeEnd != null" >
+		     AND UPDATE_TIME <![CDATA[<=]]> #{updateTimeEnd}
+		   </if>
+	</select>
+
+
+	<!-- 获取满足条件的记录列表 -->
+	<select id="QUERY_FOR_LIST" parameterType="org.gy.framework.bo.WxAppConfigBo" resultType="org.gy.framework.model.WxAppConfig">
+		select
+			ID AS id,
+			APP_ID AS appId,
+			APP_SECRET AS appSecret,
+			APP_NAME AS appName,
+			VALIDATE_TOKEN AS validateToken,
+			ENABLE AS enable,
+			CREATE_TIME AS createTime,
+			UPDATE_TIME AS updateTime
+		FROM
+			wx_app_config
+		WHERE 1=1
+		   	   <if test="id != null" >
+			     AND ID = #{id}
+			   </if>   
+		   	   <if test="appId != null and appId !=''" >
+			     AND APP_ID = #{appId}
+			   </if>
+		   	   <if test="appSecret != null and appSecret !=''" >
+			     AND APP_SECRET = #{appSecret}
+			   </if>
+		   	   <if test="appName != null and appName !=''" >
+			     AND APP_NAME = #{appName}
+			   </if>
+		   	   <if test="validateToken != null and validateToken !=''" >
+			     AND VALIDATE_TOKEN = #{validateToken}
+			   </if>
+		   	   <if test="enable != null" >
+			     AND ENABLE = #{enable}
+			   </if>   
+			   <if test="createTime != null" >
+			     AND CREATE_TIME = #{createTime}
+			   </if>
+	   	       <if test="createTimeStart != null" >
+				 AND CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+			   </if>
+			   <if test="createTimeEnd != null" >
+			     AND CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+			   </if>
+			   <if test="updateTime != null" >
+			     AND UPDATE_TIME = #{updateTime}
+			   </if>
+	   	       <if test="updateTimeStart != null" >
+				 AND UPDATE_TIME <![CDATA[>=]]> #{updateTimeStart}
+			   </if>
+			   <if test="updateTimeEnd != null" >
+			     AND UPDATE_TIME <![CDATA[<=]]> #{updateTimeEnd}
+			   </if>
+		   LIMIT #{index},#{pageSize}
+	</select>
+</mapper>
+

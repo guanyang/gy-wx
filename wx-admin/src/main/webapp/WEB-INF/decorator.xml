@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/freemarker">
+	<!-- <excludes> 标签代表不对定义的请求名进行装饰 -->
+	<excludes>
+		<pattern>/css/*</pattern>
+		<pattern>/images/*</pattern>
+		<pattern>/js/*</pattern>
+		<pattern>/ajax/*</pattern>
+		<pattern>*.shtml</pattern><!-- 过滤公共头尾的动态页面 -->
+	</excludes>
+	<!-- <decorator> 标签代表对定义的请求名进行相应的装饰 -->
+	<decorator name="main" page="admin/decorators/main.ftl">
+		<pattern>/*.htm</pattern>
+	</decorator>
+</decorators>

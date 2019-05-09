@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 使用CGLIB自动创建代理Bean -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<!-- 注册相关后置处理器,扫描包路径下的注解配置 -->
+	<context:component-scan base-package="org.gy.framework.biz" />
+	<!-- 加载配置文件 -->
+	<context:property-placeholder location="classpath:conf/main-setting.properties" />
+
+	<import resource="spring-dataSource.xml" />
+	<import resource="spring-cache.xml" />
+
+	<!-- 线程池 -->
+	<bean id="milliseconds" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField" value="java.util.concurrent.TimeUnit.MILLISECONDS" />
+	</bean>
+	<bean id="executor" class="java.util.concurrent.ThreadPoolExecutor" destroy-method="shutdown">
+		<constructor-arg index="0" value="64" />
+		<constructor-arg index="1" value="128" />
+		<constructor-arg index="2" value="13000" />
+		<constructor-arg index="3" ref="milliseconds" />
+		<constructor-arg index="4">
+			<bean class="java.util.concurrent.ArrayBlockingQueue">
+				<constructor-arg value="10240" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg index="5">
+			<!-- 此bean返回的是 java.util.concurrent.ThreadFactory -->
+			<bean class="java.util.concurrent.Executors" factory-method="defaultThreadFactory" />
+		</constructor-arg>
+		<constructor-arg index="6">
+			<bean class="java.util.concurrent.ThreadPoolExecutor.AbortPolicy" />
+		</constructor-arg>
+	</bean>
+
+	<!-- restTemplate -->
+	<bean id="poolingClientConnectionManager" class="org.apache.http.impl.conn.PoolingClientConnectionManager">
+		<property name="maxTotal" value="256" />
+		<property name="defaultMaxPerRoute" value="50" />
+	</bean>
+	<bean id="httpClient" class="org.apache.http.impl.client.DefaultHttpClient">
+		<constructor-arg ref="poolingClientConnectionManager" />
+	</bean>
+	<bean id="httpComponentsClientHttpRequestFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+		<property name="connectTimeout" value="10000" />
+		<property name="readTimeout" value="10000" />
+		<property name="httpClient" ref="httpClient" />
+	</bean>
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		<constructor-arg>
+			<ref bean="httpComponentsClientHttpRequestFactory" />
+		</constructor-arg>
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+					<constructor-arg index="0" value="UTF-8" />
+				</bean>
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+</beans>

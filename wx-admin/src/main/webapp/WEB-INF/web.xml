@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	<display-name>Archetype Created Web Application</display-name>
+	<!-- charactor encoding -->
+	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<!-- <servlet-name>appServlet</servlet-name> -->
+	</filter-mapping>
+
+	<!-- spring -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+		classpath:conf/spring/spring-context.xml
+		</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.gy.framework.listener.SystemListener</listener-class>
+	</listener>
+	<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>
+            classpath:conf/spring/spring-servlet.xml
+            </param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name>
+		<url-pattern>*.htm</url-pattern>
+	</servlet-mapping>
+
+	<!-- Shiro配置 -->
+	<filter>
+		<filter-name>shiroFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetFilterLifecycle</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!--sitemesh -->
+	<filter>
+		<filter-name>sitemesh</filter-name>
+		<filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>sitemesh</filter-name>
+		<url-pattern>*.htm</url-pattern>
+	</filter-mapping>
+	<!-- sitemesh freemarker -->
+	<servlet>
+		<servlet-name>sitemesh-freemarker</servlet-name>
+		<servlet-class>org.gy.framework.util.freemarker.SitemeshFreemarkerDecoratorServlet</servlet-class>
+		<init-param>
+			<param-name>TemplatePath</param-name>
+			<param-value>/</param-value>
+		</init-param>
+		<init-param>
+			<param-name>NoCache</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>default_encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>sitemesh-freemarker</servlet-name>
+		<url-pattern>*.ftl</url-pattern>
+	</servlet-mapping>
+
+	<!-- 心跳检测 -->
+	<servlet>
+		<servlet-name>heartbeatServlet</servlet-name>
+		<servlet-class>org.gy.framework.util.monitor.MonitorServlet</servlet-class>
+		<init-param>
+			<param-name>version</param-name>
+			<param-value>${project.version}</param-value>
+		</init-param>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>heartbeatServlet</servlet-name>
+		<url-pattern>/monitor</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>systemCheckServlet</servlet-name>
+		<servlet-class>org.gy.framework.util.monitor.SystemCheckServlet</servlet-class>
+		<init-param>
+			<param-name>propertyConfigLocation</param-name>
+			<param-value>conf/monitor.properties</param-value>
+		</init-param>
+		<load-on-startup>4</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>systemCheckServlet</servlet-name>
+		<url-pattern>/check</url-pattern>
+	</servlet-mapping>
+
+	<!-- 微信接入 -->
+	<servlet>
+		<servlet-name>weiXinServlet</servlet-name>
+		<servlet-class>org.gy.framework.util.weixin.service.WeiXinServlet</servlet-class>
+		<load-on-startup>5</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>weiXinServlet</servlet-name>
+		<url-pattern>/wx</url-pattern>
+	</servlet-mapping>
+
+	<!-- 二维码servlet -->
+	<servlet>
+		<servlet-name>QRCodeServlet</servlet-name>
+		<servlet-class>org.gy.framework.util.qrcode.QRCodeServlet</servlet-class>
+		<load-on-startup>6</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QRCodeServlet</servlet-name>
+		<url-pattern>/qrcode</url-pattern>
+	</servlet-mapping>
+
+	<!-- index -->
+	<welcome-file-list>
+		<welcome-file>/index.htm</welcome-file>
+	</welcome-file-list>
+	<!-- exception -->
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error.html</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/error.html</location>
+	</error-page>
+</web-app>

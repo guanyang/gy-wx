@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 微信回复日志报表 -->
+<mapper namespace="WX_REPLY_LOG">
+	<!-- 查询记录条数 -->
+	<select id="COUNT_RECORD" parameterType="org.gy.framework.bo.WxReplyLogBo" resultType="java.lang.Integer">
+  	   SELECT COUNT(0) NUM
+        FROM wx_reply_log WHERE 1=1
+			   	   <if test=" id != null and id !=''">
+				     AND ID =#{id}
+				   </if>
+				   <if test=" appId != null and appId !=''">
+				     AND APP_ID =#{appId}
+				   </if>
+			   	   <if test=" openId != null and openId !=''">
+				     AND OPEN_ID =#{openId}
+				   </if>
+			   	   <if test=" type != null and type !=''">
+				     AND TYPE =#{type}
+				   </if>
+		   	       <if test=" createTimeStart != null and createTimeStart !=''">
+					 	AND CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+				   </if>
+				   <if test=" createTimeEnd != null and createTimeEnd !=''">
+				     	AND CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+				   </if>
+			   	   <if test=" content != null and content !=''">
+				     AND CONTENT =#{content}
+				   </if>
+	</select>
+
+
+	<!-- 分页查询 -->
+	<select id="FIND_BY_PAGE" parameterType="org.gy.framework.bo.WxReplyLogBo" resultType="org.gy.framework.model.WxReplyLog">
+		select
+				ID as id,
+				APP_ID as appId,
+				OPEN_ID as openId,
+				TYPE as type,
+				CREATE_TIME as createTime,
+				CONTENT as content
+		FROM
+			wx_reply_log
+		WHERE 1=1
+			   <if test=" id != null and id !=''">
+				 AND ID =#{id}
+			   </if>
+			   <if test=" appId != null and appId !=''">
+				     AND APP_ID =#{appId}
+				   </if>
+			   <if test=" openId != null and openId !=''">
+				 AND OPEN_ID =#{openId}
+			   </if>
+			   <if test=" type != null and type !=''">
+				 AND TYPE =#{type}
+			   </if>
+			   <if test=" createTimeStart != null  and createTimeStart !=''">
+					AND CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+			   </if>
+			   <if test=" createTimeEnd != null  and createTimeEnd !=''">
+					AND CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+			   </if>
+			   <if test=" content != null and content !=''">
+				 AND CONTENT =#{content}
+			   </if>
+		   ORDER BY ID DESC
+		   LIMIT #{index},#{rows}
+	</select>
+</mapper>
+

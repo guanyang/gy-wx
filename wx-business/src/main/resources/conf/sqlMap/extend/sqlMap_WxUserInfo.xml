@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 微信通用用户信息 -->
+<mapper namespace="WX_USER_INFO">
+	<!-- 获取满足条件的记录数量 -->
+	<select id="QUERY_FOR_COUNT" parameterType="org.gy.framework.bo.WxUserInfoBo" resultType="java.lang.Integer">
+  	   	SELECT 
+  	   		COUNT(1)
+        FROM wx_user_info 
+        WHERE 1=1
+	   	   <if test="id != null" >
+		     AND ID = #{id}
+		   </if>   
+	   	   <if test="appId != null and appId !=''" >
+		     AND APP_ID = #{appId}
+		   </if>
+	   	   <if test="openId != null and openId !=''" >
+		     AND OPEN_ID = #{openId}
+		   </if>
+	   	   <if test="unionId != null and unionId !=''" >
+		     AND UNION_ID = #{unionId}
+		   </if>
+	   	   <if test="nickName != null and nickName !=''" >
+		     AND NICK_NAME = #{nickName}
+		   </if>
+	   	   <if test="sex != null" >
+		     AND SEX = #{sex}
+		   </if>   
+	   	   <if test="province != null and province !=''" >
+		     AND PROVINCE = #{province}
+		   </if>
+	   	   <if test="city != null and city !=''" >
+		     AND CITY = #{city}
+		   </if>
+	   	   <if test="country != null and country !=''" >
+		     AND COUNTRY = #{country}
+		   </if>
+	   	   <if test="language != null and language !=''" >
+		     AND LANGUAGE = #{language}
+		   </if>
+	   	   <if test="headImgUrl != null and headImgUrl !=''" >
+		     AND HEAD_IMG_URL = #{headImgUrl}
+		   </if>
+	   	   <if test="subscribe != null" >
+		     AND SUBSCRIBE = #{subscribe}
+		   </if>   
+		   <if test="subscribeTime != null" >
+		     AND SUBSCRIBE_TIME = #{subscribeTime}
+		   </if>
+   	       <if test="subscribeTimeStart != null" >
+			 AND SUBSCRIBE_TIME <![CDATA[>=]]> #{subscribeTimeStart}
+		   </if>
+		   <if test="subscribeTimeEnd != null" >
+		     AND SUBSCRIBE_TIME <![CDATA[<=]]> #{subscribeTimeEnd}
+		   </if>
+		   <if test="createTime != null" >
+		     AND CREATE_TIME = #{createTime}
+		   </if>
+   	       <if test="createTimeStart != null" >
+			 AND CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+		   </if>
+		   <if test="createTimeEnd != null" >
+		     AND CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+		   </if>
+		   <if test="updateTime != null" >
+		     AND UPDATE_TIME = #{updateTime}
+		   </if>
+   	       <if test="updateTimeStart != null" >
+			 AND UPDATE_TIME <![CDATA[>=]]> #{updateTimeStart}
+		   </if>
+		   <if test="updateTimeEnd != null" >
+		     AND UPDATE_TIME <![CDATA[<=]]> #{updateTimeEnd}
+		   </if>
+	</select>
+
+
+	<!-- 获取满足条件的记录列表 -->
+	<select id="QUERY_FOR_LIST" parameterType="org.gy.framework.bo.WxUserInfoBo" resultType="org.gy.framework.model.WxUserInfo">
+		select
+			ID AS id,
+			APP_ID AS appId,
+			OPEN_ID AS openId,
+			UNION_ID AS unionId,
+			NICK_NAME AS nickName,
+			SEX AS sex,
+			PROVINCE AS province,
+			CITY AS city,
+			COUNTRY AS country,
+			LANGUAGE AS language,
+			HEAD_IMG_URL AS headImgUrl,
+			SUBSCRIBE AS subscribe,
+			SUBSCRIBE_TIME AS subscribeTime,
+			CREATE_TIME AS createTime,
+			UPDATE_TIME AS updateTime
+		FROM
+			wx_user_info
+		WHERE 1=1
+		   	   <if test="id != null" >
+			     AND ID = #{id}
+			   </if>   
+		   	   <if test="appId != null and appId !=''" >
+			     AND APP_ID = #{appId}
+			   </if>
+		   	   <if test="openId != null and openId !=''" >
+			     AND OPEN_ID = #{openId}
+			   </if>
+		   	   <if test="unionId != null and unionId !=''" >
+			     AND UNION_ID = #{unionId}
+			   </if>
+		   	   <if test="nickName != null and nickName !=''" >
+			     AND NICK_NAME = #{nickName}
+			   </if>
+		   	   <if test="sex != null" >
+			     AND SEX = #{sex}
+			   </if>   
+		   	   <if test="province != null and province !=''" >
+			     AND PROVINCE = #{province}
+			   </if>
+		   	   <if test="city != null and city !=''" >
+			     AND CITY = #{city}
+			   </if>
+		   	   <if test="country != null and country !=''" >
+			     AND COUNTRY = #{country}
+			   </if>
+		   	   <if test="language != null and language !=''" >
+			     AND LANGUAGE = #{language}
+			   </if>
+		   	   <if test="headImgUrl != null and headImgUrl !=''" >
+			     AND HEAD_IMG_URL = #{headImgUrl}
+			   </if>
+		   	   <if test="subscribe != null" >
+			     AND SUBSCRIBE = #{subscribe}
+			   </if>   
+			   <if test="subscribeTime != null" >
+			     AND SUBSCRIBE_TIME = #{subscribeTime}
+			   </if>
+	   	       <if test="subscribeTimeStart != null" >
+				 AND SUBSCRIBE_TIME <![CDATA[>=]]> #{subscribeTimeStart}
+			   </if>
+			   <if test="subscribeTimeEnd != null" >
+			     AND SUBSCRIBE_TIME <![CDATA[<=]]> #{subscribeTimeEnd}
+			   </if>
+			   <if test="createTime != null" >
+			     AND CREATE_TIME = #{createTime}
+			   </if>
+	   	       <if test="createTimeStart != null" >
+				 AND CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+			   </if>
+			   <if test="createTimeEnd != null" >
+			     AND CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+			   </if>
+			   <if test="updateTime != null" >
+			     AND UPDATE_TIME = #{updateTime}
+			   </if>
+	   	       <if test="updateTimeStart != null" >
+				 AND UPDATE_TIME <![CDATA[>=]]> #{updateTimeStart}
+			   </if>
+			   <if test="updateTimeEnd != null" >
+			     AND UPDATE_TIME <![CDATA[<=]]> #{updateTimeEnd}
+			   </if>
+		   LIMIT #{index},#{pageSize}
+	</select>
+	
+		<!-- 添加或更新用户信息，如果存在，则更新，返回主键 -->
+	<insert id="INSERT_OR_UPDATE_USER_INFO" keyProperty="id" parameterType="org.gy.framework.model.WxUserInfo" useGeneratedKeys="true">
+		INSERT INTO wx_user_info (
+			APP_ID,
+			OPEN_ID,
+			UNION_ID,
+			NICK_NAME,
+			SEX,
+			PROVINCE,
+			CITY,
+			COUNTRY,
+			LANGUAGE,
+			HEAD_IMG_URL,
+			SUBSCRIBE,
+			SUBSCRIBE_TIME,
+			CREATE_TIME,
+			UPDATE_TIME
+		)
+		VALUES
+		(
+			#{appId},
+			#{openId},
+			#{unionId},
+			#{nickName},
+			#{sex},
+			#{province},
+			#{city},
+			#{country},
+			#{language},
+			#{headImgUrl},
+			#{subscribe},
+			#{subscribeTime},
+			NOW(),
+			NOW()
+		) ON DUPLICATE KEY UPDATE
+		UNION_ID=VALUES(UNION_ID),
+		NICK_NAME=VALUES(NICK_NAME),
+		SEX=VALUES(SEX),
+		PROVINCE=VALUES(PROVINCE),
+		CITY=VALUES(CITY),
+		COUNTRY=VALUES(COUNTRY),
+		LANGUAGE=VALUES(LANGUAGE),
+		HEAD_IMG_URL=VALUES(HEAD_IMG_URL),
+		SUBSCRIBE=VALUES(SUBSCRIBE),
+		SUBSCRIBE_TIME=VALUES(SUBSCRIBE_TIME),
+		UPDATE_TIME =VALUES(UPDATE_TIME)
+	</insert>
+</mapper>
+

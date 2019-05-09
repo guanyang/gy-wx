@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- JNDI数据源 -->
+	<jee:jndi-lookup id="dataSourceSlave" jndi-name="$[jndi.config.readDS]" proxy-interface="javax.sql.DataSource" lookup-on-startup="false" />
+	<jee:jndi-lookup id="dataSourceMaster" jndi-name="$[jndi.config.writeDS]" proxy-interface="javax.sql.DataSource" lookup-on-startup="false" />
+
+	<!-- master配置 -->
+	<bean id="sqlSessionFactoryMaster" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceMaster" />
+		<property name="mapperLocations">
+			<array>
+				<value>classpath:conf/sqlMap/*.xml</value>
+				<value>classpath:conf/sqlMap/extend/*.xml</value>
+			</array>
+		</property>
+	</bean>
+	<!-- SqlSeesionTemplate是线程安全的,可以被多个Dao共享,可以使用Singleton -->
+	<bean id="sqlSessionMaster" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactoryMaster" />
+	</bean>
+	<!-- 通过扫描的模式，扫描目录下所有的mapper， 根据对应的mapper.xml为其生成代理类 -->
+	<!-- <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"> <property name="basePackage" value="org.gy.demo.dao" /> <property name="sqlSessionTemplateBeanName" value="sqlSessionMaster" /> </bean> -->
+
+	<!-- 事务管理 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceMaster"></property>
+	</bean>
+	<!-- 使用声明式事务 -->
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!-- slave配置 -->
+	<bean id="sqlSessionFactorySlave" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceSlave" />
+		<property name="mapperLocations">
+			<array>
+				<value>classpath:conf/sqlMap/*.xml</value>
+				<value>classpath:conf/sqlMap/extend/*.xml</value>
+			</array>
+		</property>
+	</bean>
+	<!-- SqlSeesionTemplate是线程安全的,可以被多个Dao共享,可以使用Singleton -->
+	<bean id="sqlSessionSlave" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactorySlave" />
+	</bean>
+
+	<!-- 通过扫描的模式，扫描目录下所有的mapper， 根据对应的mapper.xml为其生成代理类 -->
+	<!-- <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"> <property name="basePackage" value="org.gy.demo.dao" /> <property name="sqlSessionTemplateBeanName" value="sqlSessionSlave" /> </bean> -->
+
+</beans>

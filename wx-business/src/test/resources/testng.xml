@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Suite1" junit="false" verbose="3" skipfailedinvocationcounts="true">
+	<test name="appMoudle1">
+		<packages>
+			<package name="org.gy.framework.biz"></package>
+		</packages>
+	</test>
+</suite>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 微信回复日志 -->
+<mapper namespace="WEIXIN_REPLY_LOG">
+	<!-- 获取满足条件的记录数量 -->
+	<select id="QUERY_FOR_COUNT" parameterType="org.gy.framework.bo.WeixinReplyLogBo" resultType="java.lang.Integer">
+  	   	SELECT 
+  	   		COUNT(1)
+        FROM weixin_reply_log 
+        WHERE 1=1
+	   	   <if test="id != null" >
+		     AND ID = #{id}
+		   </if>   
+	   	   <if test="openId != null and openId !=''" >
+		     AND OPEN_ID = #{openId}
+		   </if>
+	   	   <if test="type != null and type !=''" >
+		     AND TYPE = #{type}
+		   </if>
+		   <if test="createTime != null" >
+		     AND CREATE_TIME = #{createTime}
+		   </if>
+   	       <if test="createTimeStart != null" >
+			 AND CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+		   </if>
+		   <if test="createTimeEnd != null" >
+		     AND CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+		   </if>
+	   	   <if test="content != null and content !=''" >
+		     AND CONTENT = #{content}
+		   </if>
+	</select>
+
+
+	<!-- 获取满足条件的记录列表 -->
+	<select id="QUERY_FOR_LIST" parameterType="org.gy.framework.bo.WeixinReplyLogBo" resultType="org.gy.framework.model.WeixinReplyLog">
+		select
+			ID AS id,
+			OPEN_ID AS openId,
+			TYPE AS type,
+			CREATE_TIME AS createTime,
+			CONTENT AS content
+		FROM
+			weixin_reply_log
+		WHERE 1=1
+		   	   <if test="id != null" >
+			     AND ID = #{id}
+			   </if>   
+		   	   <if test="openId != null and openId !=''" >
+			     AND OPEN_ID = #{openId}
+			   </if>
+		   	   <if test="type != null and type !=''" >
+			     AND TYPE = #{type}
+			   </if>
+			   <if test="createTime != null" >
+			     AND CREATE_TIME = #{createTime}
+			   </if>
+	   	       <if test="createTimeStart != null" >
+				 AND CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+			   </if>
+			   <if test="createTimeEnd != null" >
+			     AND CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+			   </if>
+		   	   <if test="content != null and content !=''" >
+			     AND CONTENT = #{content}
+			   </if>
+		   LIMIT #{index},#{pageSize}
+	</select>
+</mapper>
+

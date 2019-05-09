@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="SYS_RESOURCE">
+
+	<!-- 获取满足条件的资源列表 -->
+	<select id="SELECT_RESOURCE_LIST" parameterType="org.gy.framework.bo.SysResourceQueryBo" resultType="org.gy.framework.model.SysResource">
+		SELECT
+			t.ID as id,
+			t.NAME as name,
+			t.PARENT_ID as parentId,
+			t.URL as url,
+			t.DESCRIPTION as description,
+			t.STATUS as status
+		FROM
+		sys_resource t
+		WHERE 1=1
+		<if test="name != null and name!=''">
+			AND t.NAME like CONCAT('%',#{name},'%')
+		</if>
+		LIMIT #{index},#{pageSize}
+	</select>
+
+	<!-- 获取满足条件的资源数量 -->
+	<select id="SELECT_RESOURCE_COUNT" parameterType="org.gy.framework.bo.SysResourceQueryBo" resultType="java.lang.Integer">
+		select count(1) from sys_resource t
+		WHERE 1=1
+		<if test="name != null and name!=''">
+			AND t.NAME like CONCAT('%',#{name},'%')
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 微信用户记录报表 -->
+<mapper namespace="WX_USER_RECORD">
+	<!-- 查询记录条数 -->
+	<select id="COUNT_RECORD" parameterType="org.gy.framework.bo.WxUserRecordBo" resultType="java.lang.Integer">
+  	   SELECT COUNT(0) NUM
+        FROM 
+        	wx_user_record t1
+        	LEFT JOIN wx_user_info t2 ON t1.APP_ID = t2.APP_ID 
+			AND t1.OPEN_ID = t2.OPEN_ID
+        WHERE 1=1
+			   	   <if test=" id != null and id !=''">
+				     AND t1.ID =#{id}
+				   </if>
+				   <if test=" appId != null and appId !=''">
+				     AND t1.APP_ID =#{appId}
+				   </if>
+			   	   <if test=" openId != null and openId !=''">
+				     AND t1.OPEN_ID =#{openId}
+				   </if>
+			   	   <if test=" subStatus != null and subStatus !=''">
+				     AND t1.SUB_STATUS =#{subStatus}
+				   </if>
+		   	       <if test=" createTimeStart != null and createTimeStart !=''">
+					 	AND t1.CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+				   </if>
+				   <if test=" createTimeEnd != null and createTimeEnd !=''">
+				     	AND t1.CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+				   </if>
+		   	       <if test=" updateTimeStart != null and updateTimeStart !=''">
+					 	AND t1.UPDATE_TIME <![CDATA[>=]]> #{updateTimeStart}
+				   </if>
+				   <if test=" updateTimeEnd != null and updateTimeEnd !=''">
+				     	AND t1.UPDATE_TIME <![CDATA[<=]]> #{updateTimeEnd}
+				   </if>
+	</select>
+
+
+	<!-- 分页查询 -->
+	<select id="FIND_BY_PAGE" parameterType="org.gy.framework.bo.WxUserRecordBo" resultType="org.gy.framework.bo.WxUserRecordBo">
+		select
+				t1.ID as id,
+				t1.APP_ID as appId,
+				t1.OPEN_ID as openId,
+				t1.SUB_STATUS as subStatus,
+				t1.CREATE_TIME as createTime,
+				t1.UPDATE_TIME as updateTime,
+				t1.SCENE_ID as sceneId,
+				t2.UNION_ID as unionId,
+				t2.NICK_NAME as nickName,
+				t2.SEX as sex,
+				t2.PROVINCE as province,
+				t2.CITY as city,
+				t2.COUNTRY as country,
+				t2.LANGUAGE as language,
+				t2.HEAD_IMG_URL as headImgUrl,
+				t2.SUBSCRIBE_TIME as subscribeTime
+		FROM
+			wx_user_record t1 
+			LEFT JOIN wx_user_info t2 ON t1.APP_ID = t2.APP_ID 
+			AND t1.OPEN_ID = t2.OPEN_ID
+		WHERE 1=1
+			   <if test=" id != null and id !=''">
+				 AND t1.ID =#{id}
+			   </if>
+			   <if test=" appId != null and appId !=''">
+				     AND t1.APP_ID =#{appId}
+			   </if>
+			   <if test=" openId != null and openId !=''">
+				 AND t1.OPEN_ID =#{openId}
+			   </if>
+			   <if test=" subStatus != null and subStatus !=''">
+				 AND t1.SUB_STATUS =#{subStatus}
+			   </if>
+			   <if test=" createTimeStart != null  and createTimeStart !=''">
+					AND t1.CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+			   </if>
+			   <if test=" createTimeEnd != null  and createTimeEnd !=''">
+					AND t1.CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+			   </if>
+			   <if test=" updateTimeStart != null  and updateTimeStart !=''">
+					AND t1.UPDATE_TIME <![CDATA[>=]]> #{updateTimeStart}
+			   </if>
+			   <if test=" updateTimeEnd != null  and updateTimeEnd !=''">
+					AND t1.UPDATE_TIME <![CDATA[<=]]> #{updateTimeEnd}
+			   </if>
+		   ORDER BY t1.UPDATE_TIME DESC	   
+		   LIMIT #{index},#{rows}
+	</select>
+	
+	<!-- 添加或更新用户记录，如果存在，则更新，返回主键 -->
+	<insert id="INSERT_OR_UPDATE_USER_RECORD" keyProperty="id" parameterType="org.gy.framework.model.WxUserRecord" useGeneratedKeys="true">
+		INSERT INTO wx_user_record (
+			APP_ID,
+			OPEN_ID,
+			SUB_STATUS,
+			SCENE_ID,
+			CREATE_TIME,
+			UPDATE_TIME
+		)
+		VALUES
+		(
+			#{appId},
+			#{openId},
+			#{subStatus},
+			#{sceneId},
+			NOW(),
+			NOW()
+		) ON DUPLICATE KEY UPDATE
+		SUB_STATUS=VALUES(SUB_STATUS),
+		UPDATE_TIME =VALUES(UPDATE_TIME)
+	</insert>
+	
+	<!-- 根据openId更新用户记录，不需要更新场景ID -->
+	<select id="UPDATE_USER_RECORD_BY_OPEN_ID_AND_APPID" parameterType="org.gy.framework.model.WxUserRecord" resultType="java.lang.Integer">
+			UPDATE wx_user_record
+			SET UPDATE_TIME = NOW(),
+			 SUB_STATUS = #{subStatus}
+			WHERE
+				OPEN_ID = #{openId}
+			AND APP_ID = #{appId}	
+	</select>
+</mapper>

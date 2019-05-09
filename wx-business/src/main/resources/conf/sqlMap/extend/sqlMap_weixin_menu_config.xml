@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="WEIXIN_MENU_CONFIG">
+
+	<!-- 获取要微信菜单列表 -->
+	<select id="SELECT_MENU_LIST" resultType="org.gy.framework.bo.WeixinMenuConfigBo">		
+		SELECT
+			a.ID as id,
+			a.MENU_NAME as menuName,
+			a.MENU_TYPE as menuType,
+			a.PARENT_ID as parentId,
+			a.SORT_NO as sortNo,
+			a.REPLY_ID as replyId,
+			b.TITLE as title,
+			b.DESCRIPTION as description,
+			b.REPLY_TEXT as replyText,
+			b.REPLY_LINK as replyLink,
+			b.REPLY_IMG as replyImg
+		FROM
+			weixin_menu_config a,
+			weixin_reply_config b
+		WHERE
+			a.ENABLE = 1
+		AND b.ENABLE = 1
+		AND a.REPLY_ID = b.ID
+		ORDER BY
+			a.SORT_NO ASC
+	</select>
+	
+</mapper>

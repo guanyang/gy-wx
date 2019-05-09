@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 微信菜单配置报表 -->
+<mapper namespace="WX_MENU_CONFIG">
+	<!-- 查询记录条数 -->
+	<select id="COUNT_RECORD" parameterType="org.gy.framework.bo.WxMenuConfigBo" resultType="java.lang.Integer">
+		SELECT COUNT(0) NUM
+		FROM wx_menu_config WHERE 1=1
+		<if test=" id != null and id !=''">
+			AND ID =#{id}
+		</if>
+		<if test=" appId != null and appId !=''">
+			AND APP_ID =#{appId}
+		</if>
+		<if test=" menuName != null and menuName !=''">
+			AND MENU_NAME =#{menuName}
+		</if>
+		<if test=" menuType != null and menuType !=''">
+			AND MENU_TYPE =#{menuType}
+		</if>
+		<if test=" parentId != null and parentId !=''">
+			AND PARENT_ID =#{parentId}
+		</if>
+		<if test=" replyId != null and replyId !=''">
+			AND REPLY_ID =#{replyId}
+		</if>
+		<if test=" sortNo != null and sortNo !=''">
+			AND SORT_NO =#{sortNo}
+		</if>
+		<if test=" enable != null">
+			AND ENABLE =#{enable}
+		</if>
+		<if test=" createTimeStart != null and createTimeStart !=''">
+			AND CREATE_TIME <![CDATA[>=]]>
+			#{createTimeStart}
+		</if>
+		<if test=" createTimeEnd != null and createTimeEnd !=''">
+			AND CREATE_TIME <![CDATA[<=]]>
+			#{createTimeEnd}
+		</if>
+		<if test=" updateTimeStart != null and updateTimeStart !=''">
+			AND UPDATE_TIME <![CDATA[>=]]>
+			#{updateTimeStart}
+		</if>
+		<if test=" updateTimeEnd != null and updateTimeEnd !=''">
+			AND UPDATE_TIME <![CDATA[<=]]>
+			#{updateTimeEnd}
+		</if>
+	</select>
+
+
+	<!-- 分页查询 -->
+	<select id="FIND_BY_PAGE" parameterType="org.gy.framework.bo.WxMenuConfigBo" resultType="org.gy.framework.bo.WxMenuConfigBo">
+		SELECT
+		wmc.ID AS id,
+		wmc.APP_ID as appId,
+		wmc.MENU_NAME AS menuName,
+		wmc.MENU_TYPE AS menuType,
+		wmc.PARENT_ID AS parentId,
+		wmc.REPLY_ID AS replyId,
+		wmc.SORT_NO AS sortNo,
+		wmc.ENABLE AS ENABLE,
+		wmc.CREATE_TIME AS createTime,
+		wmc.UPDATE_TIME AS updateTime,
+		wrc.TITLE AS title
+		FROM
+		wx_menu_config wmc
+		LEFT JOIN wx_reply_config wrc ON wmc.REPLY_ID = wrc.ID
+		WHERE 1=1
+		<if test=" id != null and id !=''">
+			AND wmc.ID =#{id}
+		</if>
+		<if test=" appId != null and appId !=''">
+			AND wmc.APP_ID =#{appId}
+		</if>
+		<if test=" menuName != null and menuName !=''">
+			AND wmc.MENU_NAME =#{menuName}
+		</if>
+		<if test=" menuType != null and menuType !=''">
+			AND wmc.MENU_TYPE =#{menuType}
+		</if>
+		<if test=" parentId != null and parentId !=''">
+			AND wmc.PARENT_ID =#{parentId}
+		</if>
+		<if test=" replyId != null and replyId !=''">
+			AND wmc.REPLY_ID =#{replyId}
+		</if>
+		<if test=" sortNo != null and sortNo !=''">
+			AND wmc.SORT_NO =#{sortNo}
+		</if>
+		<if test=" enable != null">
+			AND wmc.ENABLE =#{enable}
+		</if>
+		<if test=" createTimeStart != null  and createTimeStart !=''">
+			AND wmc.CREATE_TIME <![CDATA[>=]]>
+			#{createTimeStart}
+		</if>
+		<if test=" createTimeEnd != null  and createTimeEnd !=''">
+			AND wmc.CREATE_TIME <![CDATA[<=]]>
+			#{createTimeEnd}
+		</if>
+		<if test=" updateTimeStart != null  and updateTimeStart !=''">
+			AND wmc.UPDATE_TIME <![CDATA[>=]]>
+			#{updateTimeStart}
+		</if>
+		<if test=" updateTimeEnd != null  and updateTimeEnd !=''">
+			AND wmc.UPDATE_TIME <![CDATA[<=]]>
+			#{updateTimeEnd}
+		</if>
+		ORDER BY wmc.ID ASC
+		LIMIT #{index},#{rows}
+	</select>
+
+	<!-- 获取满足条件的菜单配置列表 -->
+	<select id="SELECT_MENU_CONFIG_LIST" parameterType="org.gy.framework.bo.WxMenuConfigBo" resultType="org.gy.framework.bo.WxMenuConfigBo">
+		SELECT
+		wmc.ID AS id,
+		wmc.APP_ID as appId,
+		wmc.MENU_NAME AS menuName,
+		wmc.MENU_TYPE AS menuType,
+		wmc.PARENT_ID AS parentId,
+		wmc.REPLY_ID AS replyId,
+		wmc.SORT_NO AS sortNo,
+		wmc.ENABLE AS ENABLE,
+		wmc.CREATE_TIME AS createTime,
+		wmc.UPDATE_TIME AS updateTime,
+		wrc.TITLE AS title
+		FROM
+		wx_menu_config wmc
+		LEFT JOIN wx_reply_config wrc ON wmc.REPLY_ID = wrc.ID
+		WHERE 1=1
+		<if test=" id != null and id !=''">
+			AND wmc.ID =#{id}
+		</if>
+		<if test=" appId != null and appId !=''">
+			AND wmc.APP_ID =#{appId}
+		</if>
+		<if test=" menuName != null and menuName !=''">
+			AND wmc.MENU_NAME like CONCAT('%','${menuName}','%')
+		</if>
+		<if test=" menuType != null and menuType !=''">
+			AND wmc.MENU_TYPE =#{menuType}
+		</if>
+		<if test=" parentId != null and parentId !=''">
+			AND wmc.PARENT_ID =#{parentId}
+		</if>
+		<if test=" replyId != null and replyId !=''">
+			AND wmc.REPLY_ID =#{replyId}
+		</if>
+		<if test=" sortNo != null and sortNo !=''">
+			AND wmc.SORT_NO =#{sortNo}
+		</if>
+		<!-- 针对0值，不能判断!='' -->
+		<if test=" enable != null">
+			AND wmc.ENABLE =#{enable}
+		</if>
+		<if test=" createTimeStart != null  and createTimeStart !=''">
+			AND wmc.CREATE_TIME <![CDATA[>=]]>
+			#{createTimeStart}
+		</if>
+		<if test=" createTimeEnd != null  and createTimeEnd !=''">
+			AND wmc.CREATE_TIME <![CDATA[<=]]>
+			#{createTimeEnd}
+		</if>
+		<if test=" updateTimeStart != null  and updateTimeStart !=''">
+			AND wmc.UPDATE_TIME <![CDATA[>=]]>
+			#{updateTimeStart}
+		</if>
+		<if test=" updateTimeEnd != null  and updateTimeEnd !=''">
+			AND wmc.UPDATE_TIME <![CDATA[<=]]>
+			#{updateTimeEnd}
+		</if>
+		ORDER BY wmc.ID ASC
+	</select>
+
+	<!-- 获取微信菜单列表 -->
+	<select id="SELECT_MENU_LIST" parameterType="org.gy.framework.bo.WxMenuConfigBo" resultType="org.gy.framework.bo.WxMenuConfigBo">
+		SELECT
+		a.ID as id,
+		a.APP_ID as appId,
+		a.MENU_NAME as menuName,
+		a.MENU_TYPE as menuType,
+		a.PARENT_ID as parentId,
+		a.SORT_NO as sortNo,
+		a.REPLY_ID as replyId,
+		b.TITLE as title,
+		b.DESCRIPTION as description,
+		b.REPLY_TEXT as replyText,
+		b.REPLY_LINK as replyLink,
+		b.REPLY_IMG as replyImg,
+		b.KEYWORDS as keywords
+		FROM
+		wx_menu_config a,
+		wx_reply_config b
+		WHERE a.ENABLE = 1
+		AND b.ENABLE=1
+		AND a.REPLY_ID =b.ID
+		AND a.APP_ID=#{appId}
+		ORDER BY a.SORT_NO ASC
+	</select>
+</mapper>

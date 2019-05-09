@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<access-policy>
+	<!-- 受限资源 -->
+	<restricted-access>
+		<url-pattern>/**/private/*</url-pattern>
+	</restricted-access>
+	<!-- gateway资源 -->
+	<!-- <gateway> <url-pattern>/**/gateway/*</url-pattern> </gateway> -->
+</access-policy>

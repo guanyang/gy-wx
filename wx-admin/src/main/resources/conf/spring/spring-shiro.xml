@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+	default-lazy-init="true">
+
+	<bean id="credentialsMatcher" class="org.gy.framework.shiro.credentials.RetryLimitHashedCredentialsMatcher">
+		<!-- hashAlgorithmName必须的，没有默认值。可以有MD5或者SHA-1，如果对密码安全有更高要求可以用SHA-256或者更高。 这里使用MD5 storedCredentialsHexEncoded默认是true，此时用的是密码加密用的是Hex编码；false时用Base64编码 hashIterations迭代次数，默认值是1。 -->
+		<constructor-arg ref="cacheManager" />
+		<property name="hashAlgorithmName" value="md5" />
+		<property name="hashIterations" value="2" />
+		<property name="storedCredentialsHexEncoded" value="true" />
+	</bean>
+	<!-- 凭证匹配器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="myRealm" />
+		<property name="sessionManager" ref="sessionManager" />
+		<!-- 使用下面配置的缓存管理器 -->
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+	<!--自定义Realm -->
+	<bean id="myRealm" class="org.gy.framework.shiro.MyRealm">
+		<property name="credentialsMatcher" ref="credentialsMatcher" />
+		<property name="cachingEnabled" value="false" />
+		<!-- 如需要自定义缓存时间放开以下.修改 ehcache.xml -->
+		<!--<property name="authenticationCachingEnabled" value="true"/> -->
+		<!--<property name="authenticationCacheName" value="authenticationCache"/> -->
+		<!--<property name="authorizationCachingEnabled" value="true"/> -->
+		<!--<property name="authorizationCacheName" value="authorizationCache"/> -->
+	</bean>
+
+	<!-- 继承FormAuthenticationFilter基于Form表单的身份验证过滤器，用于扩展 -->
+	<!-- <bean id="formAuthenticationFilter" class="org.gy.framework.shiro.filter.ExtendFormAuthenticationFilter"> <property name="usernameParam" value="username" /> <property name="passwordParam" value="password" 
+		/> <property name="rememberMeParam" value="rememberMe" /> <property name="loginUrl" value="/loginAjax.htm" /> </bean> -->
+
+	<!-- 配置shiro的过滤器工厂类，id- shiroFilter要和我们在web.xml中配置的过滤器一致 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/login.htm" />
+		<property name="successUrl" value="/index.htm" />
+		<property name="unauthorizedUrl" value="/error.html" />
+		<!-- <property name="filters"> <util:map> <entry key="authc" value-ref="formAuthenticationFilter" /> </util:map> </property> -->
+		<!-- 自定义权限配置 -->
+		<property name="filterChainDefinitionMap" ref="chainDefinitionSectionMetaSource" />
+	</bean>
+	<!--自定义filterChainDefinitionMap -->
+	<bean id="chainDefinitionSectionMetaSource" class="org.gy.framework.shiro.ChainDefinitionSectionMetaSource">
+		<property name="filterChainDefinitions">
+			<value>
+				/login.htm = anon
+				/favicon.ico = anon
+				/project/** = anon
+				/error.html = anon
+				/wx = anon
+				/qrcode = anon
+				/logout.htm = anon
+				/wx/** = anon
+				/test/** = anon
+				/.well-known/** = anon
+			</value>
+		</property>
+	</bean>
+
+	<bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
+
+	<!-- 会话DAO -->
+	<bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+		<property name="activeSessionsCacheName" value="shiro-activeSessionCache" />
+		<property name="sessionIdGenerator" ref="sessionIdGenerator" />
+	</bean>
+
+	<!-- 会话验证调度器 -->
+	<!-- 全局的会话信息检测扫描信息间隔30分钟 -->
+	<bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
+		<property name="sessionValidationInterval" value="1800000" />
+		<property name="sessionManager" ref="sessionManager" />
+	</bean>
+
+	<!-- 会话Cookie模板 -->
+	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg value="sid" />
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="180000" />
+	</bean>
+
+	<!-- 会话管理器 -->
+	<!-- 全局的会话信息设置成30分钟,sessionValidationSchedulerEnabled参数就是是否开启扫描 -->
+	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+		<property name="globalSessionTimeout" value="1800000" />
+		<property name="deleteInvalidSessions" value="true" />
+		<property name="sessionValidationSchedulerEnabled" value="true" />
+		<property name="sessionValidationScheduler" ref="sessionValidationScheduler" />
+		<property name="sessionDAO" ref="sessionDAO" />
+		<property name="sessionIdCookieEnabled" value="true" />
+		<property name="sessionIdCookie" ref="sessionIdCookie" />
+	</bean>
+
+
+	<!--shiro缓存管理器 -->
+	<bean id="cacheManager" class="org.gy.framework.shiro.spring.SpringCacheManagerWrapper">
+		<property name="cacheManager" ref="springCacheManager" />
+	</bean>
+
+	<bean id="springCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="ehcacheManager" />
+	</bean>
+
+	<!--ehcache -->
+	<!-- 使用Spring集成EhCache 缓存的bean必须实现序列化接口 -->
+	<bean id="ehcacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" destroy-method="destroy">
+		<property name="configLocation" value="classpath:conf/ehcache.xml" />
+		<!-- 指定新建的CacheManager的名称 -->
+		<property name="cacheManagerName" value="adminCacheManager" />
+	</bean>
+
+	<!-- Shiro生命周期处理器 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+</beans>

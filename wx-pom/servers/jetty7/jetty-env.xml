@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE jetty:configuration SYSTEM "jetty-config.dtd">   
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+	<New id="dataSource" class="org.eclipse.jetty.plus.jndi.Resource">
+		<Arg>jdbc/snf-sampleDS</Arg>
+		<Arg>
+			<New class="org.apache.commons.dbcp.BasicDataSource">
+				<Set name="driverClassName">com.ibm.db2.jcc.DB2Driver</Set>
+				<Set name="url">jdbc:db2://10.19.250.15:60000/simpledb:currentSchema=ARCHSMP;</Set>
+				<Set name="username">archsmp</Set>
+				<Set name="password">passw0rd</Set>
+			</New>
+		</Arg>
+	</New>
+	<New id="dataSource" class="org.eclipse.jetty.plus.jndi.Resource">
+		<Arg>jms/queueConnectionFactory</Arg>
+		<Arg>
+			<New class="com.ibm.mq.jms.MQConnectionFactory">
+				<Set name="hostName">192.168.157.94</Set>
+				<Set name="port">1414</Set>
+				<Set name="channel">STORE.CONN</Set>
+				<Set name="transportType">1</Set>
+				<Set name="CCSID">437</Set>
+				<Set name="queueManager">B2CEventQueueMgr</Set>
+			</New>
+		</Arg>
+	</New>
+
+</Configure>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 微信回复配置报表 -->
+<mapper namespace="WX_REPLY_CONFIG">
+	<!-- 查询记录条数 -->
+	<select id="COUNT_RECORD" parameterType="org.gy.framework.bo.WxReplyConfigBo" resultType="java.lang.Integer">
+  	   SELECT COUNT(0) NUM
+        FROM wx_reply_config WHERE 1=1
+			   	   <if test=" id != null and id !=''">
+				     AND ID =#{id}
+				   </if>
+				   <if test=" appId != null and appId !=''">
+				     AND APP_ID =#{appId}
+				   </if>
+			   	   <if test=" keywords != null and keywords !=''">
+				     AND KEYWORDS =#{keywords}
+				   </if>
+			   	   <if test=" title != null and title !=''">
+				     AND TITLE =#{title}
+				   </if>
+			   	   <if test=" description != null and description !=''">
+				     AND DESCRIPTION =#{description}
+				   </if>
+			   	   <if test=" replyText != null and replyText !=''">
+				     AND REPLY_TEXT =#{replyText}
+				   </if>
+			   	   <if test=" replyLink != null and replyLink !=''">
+				     AND REPLY_LINK =#{replyLink}
+				   </if>
+			   	   <if test=" replyImg != null and replyImg !=''">
+				     AND REPLY_IMG =#{replyImg}
+				   </if>
+			   	   <if test=" replyType != null and replyType !=''">
+				     AND REPLY_TYPE =#{replyType}
+				   </if>
+			   	   <if test=" enable != null">
+				     AND ENABLE =#{enable}
+				   </if>
+		   	       <if test=" createTimeStart != null and createTimeStart !=''">
+					 	AND CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+				   </if>
+				   <if test=" createTimeEnd != null and createTimeEnd !=''">
+				     	AND CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+				   </if>
+		   	       <if test=" updateTimeStart != null and updateTimeStart !=''">
+					 	AND UPDATE_TIME <![CDATA[>=]]> #{updateTimeStart}
+				   </if>
+				   <if test=" updateTimeEnd != null and updateTimeEnd !=''">
+				     	AND UPDATE_TIME <![CDATA[<=]]> #{updateTimeEnd}
+				   </if>
+	</select>
+
+
+	<!-- 分页查询 -->
+	<select id="FIND_BY_PAGE" parameterType="org.gy.framework.bo.WxReplyConfigBo" resultType="org.gy.framework.model.WxReplyConfig">
+		select
+				ID as id,
+				APP_ID as appId,
+				KEYWORDS as keywords,
+				TITLE as title,
+				DESCRIPTION as description,
+				REPLY_TEXT as replyText,
+				REPLY_LINK as replyLink,
+				REPLY_IMG as replyImg,
+				REPLY_TYPE as replyType,
+				ENABLE as enable,
+				CREATE_TIME as createTime,
+				UPDATE_TIME as updateTime
+		FROM
+			wx_reply_config
+		WHERE 1=1
+			   <if test=" id != null and id !=''">
+				 AND ID =#{id}
+			   </if>
+			   <if test=" appId != null and appId !=''">
+				     AND APP_ID =#{appId}
+				   </if>
+			   <if test=" keywords != null and keywords !=''">
+				 AND KEYWORDS =#{keywords}
+			   </if>
+			   <if test=" title != null and title !=''">
+				 AND TITLE =#{title}
+			   </if>
+			   <if test=" description != null and description !=''">
+				 AND DESCRIPTION =#{description}
+			   </if>
+			   <if test=" replyText != null and replyText !=''">
+				 AND REPLY_TEXT =#{replyText}
+			   </if>
+			   <if test=" replyLink != null and replyLink !=''">
+				 AND REPLY_LINK =#{replyLink}
+			   </if>
+			   <if test=" replyImg != null and replyImg !=''">
+				 AND REPLY_IMG =#{replyImg}
+			   </if>
+			   <if test=" replyType != null and replyType !=''">
+				 AND REPLY_TYPE =#{replyType}
+			   </if>
+			   <if test=" enable != null">
+				 AND ENABLE =#{enable}
+			   </if>
+			   <if test=" createTimeStart != null  and createTimeStart !=''">
+					AND CREATE_TIME <![CDATA[>=]]> #{createTimeStart}
+			   </if>
+			   <if test=" createTimeEnd != null  and createTimeEnd !=''">
+					AND CREATE_TIME <![CDATA[<=]]> #{createTimeEnd}
+			   </if>
+			   <if test=" updateTimeStart != null  and updateTimeStart !=''">
+					AND UPDATE_TIME <![CDATA[>=]]> #{updateTimeStart}
+			   </if>
+			   <if test=" updateTimeEnd != null  and updateTimeEnd !=''">
+					AND UPDATE_TIME <![CDATA[<=]]> #{updateTimeEnd}
+			   </if>
+		   LIMIT #{index},#{rows}
+	</select>
+</mapper>
